@@ -1,0 +1,27 @@
+#!/bin/bash
+  
+#------------------
+#Aleutians volcano map
+#------------------
+
+scale=10
+region3=-190/-145/50/64
+
+gmt begin aleuvolmap pdf
+    gmt coast -R$region3 -JM$scale -Dh -BWNse -Ba10f5 -Wthinnest --MAP_FRAME_TYPE=plain --FONT_ANNOT_PRIMARY=6p --FONT_ANNOT_SECONDARY=6p
+    gmt makecpt -Cbathy -T-8000/0
+    gmt grdimage GMRT_aleu.grd -R$region3 -JM$scale
+    gmt coast -R$region3 -JM$scale -Dh -Q
+    gmt colorbar -DJBC+w4 -Ba8000 -By+1m+l"[m]" --MAP_FRAME_PEN=thinner,black --FONT_ANNOT_PRIMARY=6p
+    gmt makecpt -Cgrey35 -T-8000/8000
+    gmt coast -R$region3 -JM$scale -Dh -Gc
+    gmt grdimage GMRT_aleu.grd -R$region3 -JM$scale
+    gmt coast -R$region3 -JM$scale -Dh -Q
+    gmt basemap -L+c53+jBL+o8.5/0.6+w400+u+l --MAP_TICK_LENGTH=0p --MAP_SCALE_HEIGHT=3p --FONT_ANNOT_PRIMARY=10p
+#   awk '{print $1,$2}' GVP_Volcano_List_Holocene.csv | gmt plot -R$region3 -JM$scale -St0.15c -Wthinnest,black -Glightgrey -N
+    awk 'NR <= 7 {print $1,$2}' aleu_volcanoes_2.txt | gmt plot -R$region3 -JM$scale -St0.25c -Wthinnest,black -Gred -N
+    awk 'NR >= 8 {print $1,$2}' aleu_volcanoes_2.txt | gmt plot -R$region3 -JM$scale -St0.25c -Wthinnest,black -Gblue -N
+#   awk 'NR <= 1 {print $1,$2,$3,$4,$5}' aleu_volcanoes.txt | gmt text -R$region3 -JM$scale -F+f+j -D-0.05i/0.04i
+#   awk 'NR >= 2 {print $1,$2,$3,$4,$5}' aleu_volcanoes.txt | gmt text -R$region3 -JM$scale -F+f+j -D-0.02i/0.1i
+    awk '{print $1,$2,$3,$4,$5}' aleu_volcanoes_2.txt | gmt text -R$region3 -JM$scale -F+f+j
+gmt end show
