@@ -1,0 +1,25 @@
+#!/bin/csh -f
+
+#----plot stations----
+
+gmt begin stadata_map png
+	gmt coast -R-170/-167/52.5/54 -Ff10i/10i -Slightskyblue1 -BWESN+t"Stations near Okmok" -Dh -Gbeige -Wthinnest -c
+	gmt makecpt -Cgeo -T0/5000
+	gmt coast -Gc
+	gmt grdimage @earth_relief_30s -C -I+d
+	gmt coast -Q
+	gmt colorbar -DJRR -B1000
+	awk '{print $2,$3}' stadata3.txt | gmt plot -Ss0.5c -Wthinnest,black -Gred -N
+	gmt text stadata4.txt -JM3i -R-170/-167/52.5/54 -F+f+j
+	gmt inset begin -DjTR+w2.5i+o0.2i -F+p0.5p -M0.25i
+		gmt basemap -Rg -JA20/20/2i -Bafg
+		gmt text -F+f10p+cTL+s+tAlaska -Dj-0.15i -N
+		
+	gmt inset end
+#awk '{print $1,$2}' aleu_volcanoes.txt | gmt plot -St0.5c -Wthinnest,black -Gyellow -N
+#gmt inset begin -DjTL+w4i/3i+o0.5i -F+s+gwhite+p1p -M0.5i -N
+#gmt basemap -Jm -RUS.AK -Bafg -Dh
+#gmt text -F+f12p+cTL+tAlaska -N
+#gmt inset end
+
+gmt end show
